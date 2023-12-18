@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% block pagecontent %}
+<!-- <input type=button value="Previous Page" onClick="javascript:history.go(-1);"> -->
+<div class="container-fluid">
+    <!-- <p class="fw-bold">Bold text.</p> -->
+    <a href="javascript: history.go(-1)">Go Back</a>
+    <br><br>
+    <div class="row">
+            <div class="col-lg-12">
+                <div class="card shadow mb-4">
+                {% if object.deadline %}
+                <!-- {{ object.time_difference }} -->
+                    {% if object.time_difference > 0 %}
+                        <div class="card border-bottom-primary">
+                    {% else %}
+                        <div class="card border-bottom-danger">
+                    {% endif %}
+                {% endif %}
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">{{ object.task_name }}</h6>
+                    <div>
+                        <a type="button" class="btn btn-circle btn-sm" data-toggle="modal" data-target="#subTaskModal">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                        <a type="button" class="btn btn-circle btn-sm" href="{% url 'DeleteTask' object.id %}">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- <p class="card-text">{{ object.task_description }}</p>
+                    <hr>   
+                    <p class="card-text">{{ object.task_content }}</p> -->
+                    <p class="mb-0 text-xs">Total Items: {{ total_rows }}</p>
+                    <hr>
+                    <!-- Agrega este botón en tu plantilla para abrir el modal -->
+    
+                    {% if object.owner.username == user.username %}
+                    {% endif %}
+                    <!-- <div class="collapse mt-3" id="comentarios"> -->
+                    <!-- <ul class="list-group"> -->
+                    <!-- Este bloque lo escribí con ayuda de chat gpt  -->
+                    {% for subtask in comentarios %}
+                    <li class="list-group-item-light d-flex justify-content-between align-items-center custom-list-item">
+                            <!-- El anchor funciona y la condicion funcionan, pero no puedo quitar este errror que mem marca vscode.  -->
+                        <a style="{% if not subtask.open %}text-decoration: line-through;{% endif %}">{{ subtask.sub_task }}</a>
+                        <!-- <p>{{ subtask.open }}</p> -->
+                        <div>
+                            <input type="checkbox" data-subtask-id="{{ subtask.id }}" data-subtask-open="{{ subtask.open }}" {% if not subtask.open %}checked{% endif %}>
+                        </div>
+                    </li>
+                    <hr>
+                    {% endfor %}
+                    <li class="list-group-item-light d-flex justify-content-between align-items-left custom-list-item">                        
+                        <div class="small mb-1">
+                            <a class="text-xs "> </a>
+                        </div>
+                        
+                        <!--  test -->
+                        {% if object.days_difference is not None %}
+                            {% if object.days_difference == 0 %}
+                                <p>La fecha límite es hoy.</p>
+                            {% elif object.days_difference > 0 %}
+                                <p>Faltan {{ object.days_difference }} días para la fecha límite.</p>
+                            {% else %}
+                                <p>La fecha límite ya pasó.</p>
+                            {% endif %}
+                        {% else %}
+                            <p>La tarea no tiene fecha de vencimiento.</p>
+                        {% endif %}
+                        <!-- end test -->
+
+                        <div class="small mb-1">
+                            <a class="text-xs "> {{ object.deadline }} </a>
+                        </div>
+                    </li>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!--  Inicio modal -->
+    <div class="modal fade" id="subTaskModal" tabindex="-1" role="dialog" aria-labelledby="subTaskModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="subTaskModalLabel">Crear Subtask</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form id="subTaskForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                    <label for="subTaskName">Nombre de la Subtask</label>
+                    <input type="text" class="form-control" id="subTaskName" name="subTaskName" required>
+                    </div>
+                    <!-- Agrega más campos según tus necesidades -->
+                
+                    <button type="submit" class="btn btn-primary">Crear Subtask</button>
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!-- Fin modal -->
+</div>
+
+<!-- chat gpt-->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('click', function () {
+            const subtaskId = this.getAttribute('data-subtask-id');
+            const subtaskState = this.getAttribute('data-subtask-open');
+            const newSubTaskState = subtaskState === 'True' ? 'False' : 'True';
+
+            // Envia una solicitud AJAX para actualizar el estado del comentario en Django.
+            fetch(`/task-flow/update_subtask_state/${subtaskId}/${newSubTaskState}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log("test")
+                        // Si la actualización fue exitosa, actualiza el atributo de datos y el estado del checkbox.
+                        this.setAttribute('data-subtask-open', newSubTaskState);
+                        // Recarga la vista después de actualizar el estado
+                        window.location.reload();
+                    } else {
+                        // Maneja errores aquí.
+                        console.error('Error al actualizar el estado del comentario.');
+                    }
+                });
+        });
+    });
+});
+
+////////// subtask //////////
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Muestra el modal al cargar la página
+//    $('#subTaskModal').modal('show');
+
+    // Cierra el modal al enviar el formulario utilizando AJAX
+    $('#subTaskForm').submit(function (e) {
+        e.preventDefault();
+        const subTaskName = $('#subTaskName').val();
+        const task_id = '{{ object.id }}';  // Ajusta esto según la lógica de tu aplicación
+        const csrfToken = $('input[name=csrfmiddlewaretoken]').val();  // Obtiene el token CSRF
+
+        $.ajax({
+            type: 'POST',
+            url: `/task-flow/create_subtask/${task_id}/`,
+            data: {
+                'subTaskName': subTaskName,
+                // Añade otros campos aquí según sea necesario
+                'csrfmiddlewaretoken': csrfToken,  // Agrega el token CSRF a los datos de la solicitud
+            },
+            success: function (data) {
+                if (data.success) {
+                    $('#subTaskModal').modal('hide');
+                    // Actualiza la vista después de crear la subtarea
+                    window.location.reload();
+                } else {
+                    console.error('Error al crear Subtask:', data.message);
+                    // Maneja errores aquí
+                }
+            },
+            error: function (error) {
+                console.error('Error en la solicitud AJAX:', error);
+                // Maneja errores de AJAX aquí
+            }
+        });
+    });
+});
+
+</script>
+
+
+
+{% endblock pagecontent %}
+
+    
