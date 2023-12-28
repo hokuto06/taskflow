@@ -10,5 +10,5 @@ urlpatterns = [
     path('delete-task/<pk>', DeleteTask.as_view(), name="DeleteTask"),
     path('detail-tasks/<pk>', TaskDetail.as_view(), name="DetailTasks"),
     path('create_subtask/<int:task_id>/',views.create_subtask, name='create_subtask'),
-    path('update_subtask_state/<int:subtask_id>/<str:subtask_state>/', views.update_subtask_state, name='update_subtask_state'),
+    path('open_close_state/<int:subtask_id>/<str:open_state>/', views.open_close_state, name='open_close_state'),
     ]

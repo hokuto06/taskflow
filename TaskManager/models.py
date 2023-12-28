@@ -25,6 +25,6 @@ class SubTask(models.Model):
     open = models.BooleanField() # Este campo debio llamarse "Open" 
     sub_task_list = models.ForeignKey(TasksList, on_delete=models.CASCADE)
     date = models.DateTimeField(null=True, blank=True)
-
+    state = models.BooleanField(null=True, blank=True)
     def __str__(self):
         return f'{self.sub_task}'

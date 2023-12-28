@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const newSubTaskState = subtaskState === 'True' ? 'False' : 'True';
 
             // Envia una solicitud AJAX para actualizar el estado del comentario en Django.
-            fetch(`/task-flow/update_subtask_state/${subtaskId}/${newSubTaskState}/`)
+            fetch(`/task-flow/open_close_state/${subtaskId}/${newSubTaskState}/`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

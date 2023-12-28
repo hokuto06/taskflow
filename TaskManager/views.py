@@ -119,10 +119,10 @@ def create_subtask(request, task_id):
     except Exception as e:
         return JsonResponse({'success': False, 'message': f'Error al crear Subtask: {str(e)}'})
     
-def update_subtask_state(request, subtask_id, subtask_state):
+def open_close_state(request, subtask_id, open_state):
     try:
         _subtask = SubTask.objects.get(pk=subtask_id)
-        _subtask.open = subtask_state
+        _subtask.open = open_state
         _subtask.save()
         return JsonResponse({'success': True})
     except SubTask.DoesNotExist:
