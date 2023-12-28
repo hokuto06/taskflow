@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block pagecontent %}
+<h1>Subtasks with State = 3</h1>
+<div class="row">
+  
+  
+  {% if subtasks %}
+  {% for subtask in subtasks %}
+  <div class="col-lg-6 mb-4">
+        <div class="card bg-info text-white shadow">
+            <div class="card-body">
+              {{ subtask.id }}<br>
+              {{ subtask.sub_task }}<br>
+                <div class="text-white-50 small">#4e73df</div>
+            </div>
+        </div>
+      </div>
+        {% endfor %}
+        {% else %}
+        <p>No subtasks with State = 3 found.</p>
+        {% endif %}
+  
+</div>
+  {% endblock %}

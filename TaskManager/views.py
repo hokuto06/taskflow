@@ -17,6 +17,15 @@ def inicio(req):
     print(datetime.now())
     return render(req, 'base.html')
 
+def dashboard(req):
+    # Obtén las subtasks con estado = 3
+    subtasks = SubTask.objects.filter(state=3)
+
+    # Pasa las subtasks al contexto
+    context = {'subtasks': subtasks}
+    
+    return render(req, 'dashboard.html', context)    
+
 def task_list(req):
     return render(req, 'task_list.html')
 
@@ -128,3 +137,11 @@ def open_close_state(request, subtask_id, open_state):
     except SubTask.DoesNotExist:
         return JsonResponse({'success': False, 'message': 'Comentario no encontrado'})
     
+def change_subtask_state(request, subtask_id, subtask_state):
+    try:
+        _subtask = SubTask.objects.get(pk=subtask_id)
+        _subtask.state = subtask_state
+        _subtask.save()
+        return JsonResponse({'success': True})
+    except SubTask.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Comentario no encontrado'})        

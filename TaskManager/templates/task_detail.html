@@ -46,6 +46,13 @@
                         <a style="{% if not subtask.open %}text-decoration: line-through;{% endif %}">{{ subtask.sub_task }}</a>
                         <!-- <p>{{ subtask.open }}</p> -->
                         <div>
+                            <select data-subtask-id="{{ subtask.id }}" name="test" class="subtaskSelect">
+                                <option value="1">Waiting</option>
+                                <option value="2">Pending</option>
+                                <option value="3">Doing</option>
+                            </select>
+                        </div>
+                        <div>
                             <input type="checkbox" data-subtask-id="{{ subtask.id }}" data-subtask-open="{{ subtask.open }}" {% if not subtask.open %}checked{% endif %}>
                         </div>
                     </li>
@@ -175,7 +182,52 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+///////////////////////
 
+// Obtén la colección de elementos por la clase
+var subtaskSelects = document.getElementsByClassName('subtaskSelect');
+
+// Itera sobre la colección y agrega el event listener a cada elemento
+for (var i = 0; i < subtaskSelects.length; i++) {
+    subtaskSelects[i].addEventListener('change', function(event) {    // Obtiene el id de la subtask del atributo data
+    const subtaskId = this.getAttribute('data-subtask-id');
+    
+    // Obtiene el valor seleccionado del select
+    const selectedValue = event.target.value;
+
+    // Construye la URL con los parámetros
+    const url = `/task-flow/change_subtask_state/${subtaskId}/${selectedValue}/`;
+
+    // Realiza la solicitud GET
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            // Puedes incluir otros encabezados según sea necesario
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al cambiar el estado de la subtask.');
+        }
+        // Puedes manejar la respuesta si es necesario
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            console.log('Estado cambiado exitosamente:', data);
+            // Aquí puedes realizar más acciones si es necesario
+        } else {
+            console.error('Error al cambiar el estado de la subtask:', data.message);
+            // Manejar el error si es necesario
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Puedes manejar el error de acuerdo a tus necesidades
+    });
+});
+}
 </script>
 
 
