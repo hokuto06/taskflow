@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
 
 {% block pagecontent %}
-<h1>Subtasks with State = 3</h1>
+<div class="container-fluid">
+
+<h4>Working on:</h4>
+<br></br>
 <div class="row">
   
   
@@ -22,4 +25,28 @@
         {% endif %}
   
 </div>
+</div>
+
+<script>
+  // Verificar si el navegador admite la API de Notificaciones
+if ("Notification" in window) {
+  // Pedir permisos para mostrar notificaciones
+  Notification.requestPermission().then((permission) => {
+    if (permission === "granted") {
+      // Crear y mostrar la notificación
+      const notification = new Notification("Título de la notificación", {
+        body: "Contenido de la notificación",
+        icon: "url/a/una/imagen.png", // Puedes proporcionar una URL de imagen opcional
+      });
+
+      // Manejar clics en la notificación
+      notification.onclick = () => {
+        // Acción a realizar cuando se hace clic en la notificación
+        console.log("Notificación clicada");
+      };
+    }
+  });
+}
+
+</script>
   {% endblock %}
