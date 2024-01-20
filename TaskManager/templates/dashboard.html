@@ -13,7 +13,8 @@
   <div class="col-lg-6 mb-4">
         <div class="card bg-info text-white shadow">
             <div class="card-body">
-              {{ subtask.id }}<br>
+              <a href="{% url  'DetailTasks' subtask.sub_task_list.id %}">
+              {{ subtask.id }}</a><br>
               {{ subtask.sub_task }}<br>
                 <div class="text-white-50 small">#4e73df</div>
             </div>
