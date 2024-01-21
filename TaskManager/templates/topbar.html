@@ -111,9 +111,9 @@
 
                 {% if  user.is_authenticated %}
                 
-                {% if url %}
                     <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user.username }}</span>
-                {% endif %}
+                {% else %}
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Usesrname</span>                
                 {% endif %}
 
                 <img class="img-profile rounded-circle"
