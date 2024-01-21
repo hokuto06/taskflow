@@ -40,7 +40,7 @@
                 <div class="col mr-2">
                   <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                       <a href="{% url  'DetailTasks' task.id %}">{{ task.task_name }}</a></div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">Tareas: {{ task.subtask_count }} </div>
+                  <div class="h4 mb-0 font-weight-bold text-gray-800">Tareas: {{ task.subtask_closed_count }}/{{ task.subtask_count }} </div>
                   {{ task.percentage_closed_subtasks }}%
                   <div class="col">
                     <div class="progress progress-sm mr-2">

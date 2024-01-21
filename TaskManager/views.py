@@ -51,6 +51,7 @@ class TaskList(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
 
         for task in context['prueba']:
+            task.subtask_closed_count = task.subtask_set.filter(open=False).count()
             task.subtask_count = task.subtask_set.filter().count()
 
             total_subtasks = SubTask.objects.filter(sub_task_list=task).count()
