@@ -46,11 +46,15 @@
                         <a style="{% if not subtask.open %}text-decoration: line-through;{% endif %}">{{ subtask.sub_task }}</a>
                         <!-- <p>{{ subtask.open }}</p> -->
                         <div>
+                            {% if not subtask.open %}
                             <select data-subtask-id="{{ subtask.id }}" name="test" class="subtaskSelect">
                                 <option value="1" {% if subtask.state == 1 %}selected{% endif %}>Waiting</option>
                                 <option value="2" {% if subtask.state == 2 %}selected{% endif %}>Pending</option>
                                 <option value="3" {% if subtask.state == 3 %}selected{% endif %}>Doing</option>
                             </select>
+                            {% else %}
+                            <p>Done</p>
+                            {% endif %}
                         </div>
                         <div>
                             <input type="checkbox" data-subtask-id="{{ subtask.id }}" data-subtask-open="{{ subtask.open }}" {% if not subtask.open %}checked{% endif %}>
