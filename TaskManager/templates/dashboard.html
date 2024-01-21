@@ -11,7 +11,7 @@
   {% if subtasks %}
   {% for subtask in subtasks %}
   <div class="col-lg-6 mb-4">
-        <div class="card bg-info text-white shadow">
+        <div class="card bg-warning text-white shadow">
             <div class="card-body">
               <a href="{% url  'DetailTasks' subtask.sub_task_list.id %}">
               {{ subtask.id }}</a><br>
