@@ -19,7 +19,8 @@ def inicio(req):
 
 def dashboard(req):
     # Obtén las subtasks con estado = 3
-    subtasks = SubTask.objects.filter(state=3)
+    # subtasks = SubTask.objects.filter(state=3)
+    subtasks = SubTask.objects.filter(state=3).select_related('sub_task_list')
 
     # Pasa las subtasks al contexto
     context = {'subtasks': subtasks}
@@ -50,7 +51,7 @@ class TaskList(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
 
         for task in context['prueba']:
-            task.subtask_count = task.subtask_set.filter(open=True).count()
+            task.subtask_count = task.subtask_set.filter().count()
 
             total_subtasks = SubTask.objects.filter(sub_task_list=task).count()
             closed_subtasks = SubTask.objects.filter(sub_task_list=task, open=False).count()
